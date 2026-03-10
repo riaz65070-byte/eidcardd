@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eid Surprise</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&amp;family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; margin: 0; overflow: hidden; }
+    
+    .screen { 
+      position: absolute; 
+      inset: 0; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      padding: 2rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    
+    .screen.active { 
+      opacity: 1; 
+      pointer-events: auto; 
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #d4af37 0%, #f4e5a3 50%, #d4af37 100%);
+      color: #1a1a2e;
+      font-weight: 600;
+      padding: 0.875rem 2.5rem;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(212, 175, 55, 0.6);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: #888;
+      font-weight: 500;
+      padding: 0.75rem 2rem;
+      border-radius: 50px;
+      border: 1px solid #444;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+    }
+    
+    .btn-secondary:hover {
+      border-color: #666;
+      color: #aaa;
+    }
+    
+    .name-input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid #d4af37;
+      border-radius: 50px;
+      padding: 1rem 1.5rem;
+      color: #fff;
+      font-size: 1.1rem;
+      width: 100%;
+      max-width: 300px;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    
+    .name-input:focus {
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .name-input::placeholder {
+      color: #666;
+    }
+    
+    /* Final screen celebration */
+    .celebration-bg {
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stars-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    
+    .falling-item {
+      position: absolute;
+      top: -60px;
+      animation: fall linear infinite;
+      font-size: 2rem;
+    }
+    
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(calc(100% + 800px)) rotate(360deg); opacity: 0.7; }
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% { text-shadow: 0 0 20px rgba(212, 175, 55, 0.5), 0 0 40px rgba(212, 175, 55, 0.3); }
+      50% { text-shadow: 0 0 40px rgba(212, 175, 55, 0.8), 0 0 80px rgba(212, 175, 55, 0.5); }
+    }
+    
+    .eid-title {
+      font-family: 'Amiri', serif;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      background: linear-gradient(135deg, #d4af37 0%, #f4e5a3 30%, #d4af37 60%, #f4e5a3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: pulse-glow 2s ease-in-out infinite;
+      text-align: center;
+      line-height: 1.3;
+    }
+    
+    .message-text {
+      font-family: 'Poppins', sans-serif;
+      color: #e8e8e8;
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      text-align: center;
+      max-width: 600px;
+      line-height: 1.8;
+    }
+    
+    .screen-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(1.2rem, 4vw, 1.6rem);
+      color: #e8e8e8;
+      text-align: center;
+      max-width: 500px;
+      line-height: 1.6;
+    }
+    
+    .warning-icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .fade-in {
+      animation: fadeInUp 0.8s ease forwards;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .sparkle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #fff;
+      border-radius: 50%;
+      animation: sparkle 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-black">
+  <div id="app" class="h-full w-full relative"><!-- Screen 1: Welcome -->
+   <div id="screen1" class="screen active bg-black">
+    <div class="warning-icon">
+     👋
+    </div>
+    <p id="welcomeText" class="screen-title mb-8">Howdy! This is the web version of Riaz Ullah. I am here to surprise you! Wanna be surprised?</p>
+    <div class="flex gap-4 flex-wrap justify-center"><button id="yesBtn1" class="btn-primary">Yes, Surprise Me! 🎉</button> <button id="noBtn1" class="btn-secondary">No, I'm Good</button>
+    </div>
+   </div><!-- Screen 2: Name Entry -->
+   <div id="screen2" class="screen bg-black">
+    <div class="warning-icon">
+     ✨
+    </div>
+    <p class="screen-title mb-6">Enter your name to be surprised!</p><label for="nameInput" class="sr-only">Your Name</label> <input type="text" id="nameInput" class="name-input mb-6" placeholder="Your beautiful name..." aria-label="Enter your name"> <button id="enterBtn" class="btn-primary">Enter ➜</button>
+   </div><!-- Screen 3: Warning 1 -->
+   <div id="screen3" class="screen bg-black">
+    <div class="warning-icon">
+     😢
+    </div>
+    <p class="screen-title mb-8">This might be overwhelmingly emotional...</p>
+    <div class="flex gap-4 flex-wrap justify-center"><button id="stillGoBtn" class="btn-primary">Still Wanna Go 💪</button> <button id="noBtn2" class="btn-secondary">No, I'm Too Sensitive</button>
+    </div>
+   </div><!-- Screen 4: Warning 2 -->
+   <div id="screen4" class="screen bg-black">
+    <div class="warning-icon">
+     💔
+    </div>
+    <p class="screen-title mb-8">This might break you down!</p>
+    <div class="flex gap-4 flex-wrap justify-center"><button id="seriousBtn" class="btn-primary">Are You Serious? 🤨</button> <button id="noBtn3" class="btn-secondary">Okay, I'm Out</button>
+    </div>
+   </div><!-- Screen 5: Final Celebration -->
+   <div id="screen5" class="screen celebration-bg">
+    <div id="starsContainer" class="stars-container"></div>
+    <div class="relative z-10 flex flex-col items-center fade-in">
+     <div class="text-6xl mb-4">
+      🌙✨
+     </div>
+     <h1 id="eidTitle" class="eid-title mb-6">Eid Mubarak, Friend!</h1>
+     <p id="eidMessage" class="message-text mb-8">May this beautiful occasion of Eid fill your life with happiness, peace, and endless blessings.</p>
+     <div class="flex gap-3 text-4xl"><span>🕌</span> <span>🌟</span> <span>🎁</span> <span>💫</span> <span>🕌</span>
+     </div>
+     <p class="mt-8 text-sm text-gray-400 font-light">With love from Riaz Ullah ❤️</p>
+    </div>
+   </div><!-- Declined Screen -->
+   <div id="declinedScreen" class="screen bg-black">
+    <div class="warning-icon">
+     😔
+    </div>
+    <p class="screen-title mb-8">Aww, that's okay! Maybe next time...</p><button id="tryAgainBtn" class="btn-primary">Try Again? 🔄</button>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      welcome_message: "Howdy! This is the web version of Riaz Ullah. I am here to surprise you! Wanna be surprised?",
+      final_greeting: "May this beautiful occasion of Eid fill your life with happiness, peace, and endless blessings."
+    };
+
+    let userName = "";
+    
+    const screens = {
+      screen1: document.getElementById('screen1'),
+      screen2: document.getElementById('screen2'),
+      screen3: document.getElementById('screen3'),
+      screen4: document.getElementById('screen4'),
+      screen5: document.getElementById('screen5'),
+      declined: document.getElementById('declinedScreen')
+    };
+    
+    function showScreen(screenId) {
+      Object.values(screens).forEach(s => s.classList.remove('active'));
+      screens[screenId].classList.add('active');
+      
+      if (screenId === 'screen5') {
+        startCelebration();
+      }
+    }
+    
+    function startCelebration() {
+      const container = document.getElementById('starsContainer');
+      container.innerHTML = '';
+      
+      const items = ['⭐', '🌙', '✨', '💫', '🌟', '⭐', '🌙', '✨'];
+      
+      for (let i = 0; i < 30; i++) {
+        const item = document.createElement('div');
+        item.className = 'falling-item';
+        item.textContent = items[Math.floor(Math.random() * items.length)];
+        item.style.left = Math.random() * 100 + '%';
+        item.style.animationDuration = (3 + Math.random() * 4) + 's';
+        item.style.animationDelay = Math.random() * 3 + 's';
+        item.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
+        container.appendChild(item);
+      }
+      
+      // Add sparkles
+      for (let i = 0; i < 20; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = Math.random() * 100 + '%';
+        sparkle.style.top = Math.random() * 100 + '%';
+        sparkle.style.animationDelay = Math.random() * 2 + 's';
+        container.appendChild(sparkle);
+      }
+    }
+    
+    // Event Listeners
+    document.getElementById('yesBtn1').addEventListener('click', () => showScreen('screen2'));
+    document.getElementById('noBtn1').addEventListener('click', () => showScreen('declined'));
+    
+    document.getElementById('enterBtn').addEventListener('click', () => {
+      userName = document.getElementById('nameInput').value.trim() || 'Beautiful Soul';
+      showScreen('screen3');
+    });
+    
+    document.getElementById('nameInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        userName = document.getElementById('nameInput').value.trim() || 'Beautiful Soul';
+        showScreen('screen3');
+      }
+    });
+    
+    document.getElementById('stillGoBtn').addEventListener('click', () => showScreen('screen4'));
+    document.getElementById('noBtn2').addEventListener('click', () => showScreen('declined'));
+    
+    document.getElementById('seriousBtn').addEventListener('click', () => {
+      document.getElementById('eidTitle').textContent = `Eid Mubarak, ${userName}!`;
+      showScreen('screen5');
+    });
+    document.getElementById('noBtn3').addEventListener('click', () => showScreen('declined'));
+    
+    document.getElementById('tryAgainBtn').addEventListener('click', () => {
+      document.getElementById('nameInput').value = '';
+      userName = '';
+      showScreen('screen1');
+    });
+    
+    // Element SDK Integration
+    async function onConfigChange(config) {
+      document.getElementById('welcomeText').textContent = config.welcome_message || defaultConfig.welcome_message;
+      document.getElementById('eidMessage').textContent = config.final_greeting || defaultConfig.final_greeting;
+    }
+    
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+    
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["welcome_message", config.welcome_message || defaultConfig.welcome_message],
+        ["final_greeting", config.final_greeting || defaultConfig.final_greeting]
+      ]);
+    }
+    
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9da2dac1d32bf3d7',t:'MTc3MzE1MTMxOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
